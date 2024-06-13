@@ -25,20 +25,44 @@ public_users.get('/isbn/:isbn',function (req, res) {
 // Get book details based on author
 public_users.get('/author/:author',function (req, res) {
   //Write your code here
-  const bookKeys = Object.keys(books);
-  return res.status(300).send(bookKeys);
+const author = req.params.author.toLowerCase();
+const matchingBooks = [];
+
+  Object.values(books).forEach(book => {
+    if(book.author.toLowerCase() == author ) {
+        matchingBooks.push(book);
+    }
+  });
+
+  if(matchingBooks.length === 0 ) {
+    return res.status(404).send("No matching book found")
+  };
+
+  return res.json(matchingBooks);
 });
+
+
 
 // Get all books based on title
 public_users.get('/title/:title',function (req, res) {
   //Write your code here
-  return res.status(300).json({message: "Yet to be implemented"});
+    const title = req.params.title.toLowerCase();
+
+    Object.values(books).forEach(book => {
+        if(book.title.toLowerCase() == title) {
+            return res.send(book);
+        }
+    })
+
+    return res.status(404).json({error: "No matching title found"});
 });
+
+
 
 //  Get book review
 public_users.get('/review/:isbn',function (req, res) {
   //Write your code here
-  return res.status(300).json({message: "Yet to be implemented"});
+  return res.status(300).send(books[req.params.isbn].reviews);
 });
 
 module.exports.general = public_users;
